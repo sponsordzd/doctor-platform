@@ -1,0 +1,77 @@
+{
+  "doctors": [
+    {
+      "id": 1776478453086,
+      "name": "ARLINAA",
+      "email": "bassmatani72@gmail.com",
+      "password": "123AAA",
+      "phone": "0541087689",
+      "specialty": "GNRLST",
+      "location": "ORAN",
+      "current_number": 89,
+      "payment_status": "paid",
+      "payment_date": "2026-04-19T19:00:36.441Z",
+      "last_number": 60
+    },
+    {
+      "id": 1776767286701,
+      "email": "sponsordzd17@gmail.com",
+      "password": "$2b$10$I4TDxwcil5.X4qWhIKIYB.X2C4DVtQCxPOQV4gBJWi/.cz/McdLPC",
+      "phone": "0541087689",
+      "specialty": "GENIQ",
+      "current_number": 0,
+      "payment_status": "paid",
+      "payment_date": "2026-04-21T10:28:17.332Z"
+    },
+    {
+      "id": 1776768212983,
+      "name": "assma",
+      "email": "arineselin@gmail.com",
+      "password": "$2b$10$DNeHFe1q/ah4bFMHeoSDP.org5XODv4X46MT7P2dxOsIt0evzis9y",
+      "phone": "0654675432",
+      "specialty": "CARDIO",
+      "location": "Alger",
+      "current_number": 0,
+      "payment_status": "paid",
+      "payment_date": "2026-04-21T10:43:40.460Z",
+      "last_number": 1
+    }
+  ],
+  "appointments": [
+    {
+      "id": 1776478562708,
+      "doctorId": 1776478453086,
+      "patientName": "",
+      "status": "accepted",
+      "number": 58
+    },
+    {
+      "id": 1776770635251,
+      "doctorId": 1776768212983,
+      "patientName": "هند",
+      "status": "accepted",
+      "number": 1
+    },
+    {
+      "id": 1776776316819,
+      "doctorId": 1776767286701,
+      "patientName": "",
+      "status": "pending",
+      "number": null
+    },
+    {
+      "id": 1776779881506,
+      "doctorId": 1776767286701,
+      "patientName": "ثصبصبصض",
+      "status": "pending",
+      "number": null
+    },
+    {
+      "id": 1776792131079,
+      "doctorId": 1776768212983,
+      "patientName": "rima",
+      "status": "pending",
+      "number": null
+    }
+  ]
+}

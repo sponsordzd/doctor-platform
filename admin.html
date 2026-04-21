@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginBox">
+  <h2>دخول الأدمن</h2>
+
+  <input type="email" id="email" placeholder="Email"><br><br>
+  <input type="password" id="password" placeholder="Password"><br><br>
+
+  <button onclick="login()">دخول</button>
+</div>
+
+<!-- PANEL -->
+<div id="panel" style="display:none;">
+  <h2>لوحة التحكم</h2>
+
+  <button onclick="logout()">تسجيل الخروج</button>
+
+  <div id="doctorsList"></div>
+</div>
+
+<script>
+
+// تسجيل الدخول
+function login() {
+  fetch("http://localhost:3000/admin-login", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      email: document.getElementById("email").value,
+      password: document.getElementById("password").value
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      localStorage.setItem("admin", "true");
+      showPanel();
+    } else {
+      alert("بيانات خاطئة");
+    }
+  });
+}
+
+// عرض البانيل
+function showPanel() {
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  loadDoctors();
+}
+
+// تسجيل خروج
+function logout() {
+  localStorage.removeItem("admin");
+  location.reload();
+}
+
+// تحميل الأطباء
+function loadDoctors() {
+  fetch("http://localhost:3000/doctors")
+    .then(res => res.json())
+    .then(data => {
+      const c = document.getElementById("doctorsList");
+      c.innerHTML = "";
+
+      data.forEach(doc => {
+        const div = document.createElement("div");
+
+        div.innerHTML = `
+          <hr>
+          الاسم: ${doc.name}<br>
+          الهاتف: ${doc.phone}<br>
+          الحالة: ${doc.payment_status}<br>
+
+          <button onclick="pay(${doc.id})">تفعيل</button>
+          <button onclick="hide(${doc.id})">إيقاف</button>
+        `;
+
+        c.appendChild(div);
+      });
+    });
+}
+
+// تفعيل
+function pay(id) {
+  fetch("http://localhost:3000/pay/" + id, { method: "POST" })
+    .then(() => loadDoctors());
+}
+
+// إيقاف
+function hide(id) {
+  fetch("http://localhost:3000/hide/" + id, { method: "POST" })
+    .then(() => loadDoctors());
+}
+
+// إذا كان مسجل من قبل
+if (localStorage.getItem("admin") === "true") {
+  showPanel();
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+
+<!-- <link rel="stylesheet" href="style.css"> -->
+<link rel="stylesheet" href="old-style.css">
+<link rel="stylesheet" href="style.css">  <title>Doctor Platform</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div style="background:#4c6ef5; color:white; padding:25px; text-align:center; border-radius:10px; margin-bottom:20px;">
+  
+  <h2>منصة حجز الأطباء</h2>
+
+  <p>
+    ابحث عن الطبيب حسب الولاية والتخصص واحجز دورك بسهولة
+  </p>
+
+  <hr style="margin:15px 0; border-color:white;">
+
+  <h3>📍 تابع دورك من مكانك</h3>
+
+  <p>
+    يمكنك معرفة رقمك في الدور، ومتى يحين موعدك، وأين وصل الدور الحالي عند الطبيب
+    بدون الحاجة للانتظار في العيادة.
+  </p>
+
+</div>
+<h2>تسجيل طبيب</h2>
+
+<form id="doctorForm">
+  <input type="text" id="name" placeholder="الاسم"><br><br>
+  <input type="email" id="email" placeholder="Email"><br><br>
+  <input type="password" id="password" placeholder="Password"><br><br>
+  <input type="text" id="phone" placeholder="الهاتف"><br><br>
+  <input type="text" id="specialty" placeholder="التخصص"><br><br>
+<select id="location">
+  <option value="">اختر الولاية</option>
+
+  <option>Adrar</option>
+  <option>Chlef</option>
+  <option>Laghouat</option>
+  <option>Oum El Bouaghi</option>
+  <option>Batna</option>
+  <option>Béjaïa</option>
+  <option>Biskra</option>
+  <option>Béchar</option>
+  <option>Blida</option>
+  <option>Bouira</option>
+  <option>Tamanrasset</option>
+  <option>Tébessa</option>
+  <option>Tlemcen</option>
+  <option>Tiaret</option>
+  <option>Tizi Ouzou</option>
+  <option>Algiers</option>
+  <option>Djelfa</option>
+  <option>Jijel</option>
+  <option>Sétif</option>
+  <option>Saïda</option>
+  <option>Skikda</option>
+  <option>Sidi Bel Abbès</option>
+  <option>Annaba</option>
+  <option>Guelma</option>
+  <option>Constantine</option>
+  <option>Médéa</option>
+  <option>Mostaganem</option>
+  <option>M'Sila</option>
+  <option>Mascara</option>
+  <option>Ouargla</option>
+  <option>Oran</option>
+  <option>El Bayadh</option>
+  <option>Illizi</option>
+  <option>Bordj Bou Arreridj</option>
+  <option>Boumerdès</option>
+  <option>El Tarf</option>
+  <option>Tindouf</option>
+  <option>Tissemsilt</option>
+  <option>El Oued</option>
+  <option>Khenchela</option>
+  <option>Souk Ahras</option>
+  <option>Tipaza</option>
+  <option>Mila</option>
+  <option>Aïn Defla</option>
+  <option>Naâma</option>
+  <option>Aïn Témouchent</option>
+  <option>Ghardaïa</option>
+  <option>Relizane</option>
+
+  <!-- الولايات الجديدة -->
+  <option>Timimoune</option>
+  <option>Bordj Badji Mokhtar</option>
+  <option>Ouled Djellal</option>
+  <option>In Salah</option>
+  <option>In Guezzam</option>
+  <option>Touggourt</option>
+  <option>Djanet</option>
+  <option>El M'Ghair</option>
+  <option>Béni Abbès</option>
+  <option>El Menia</option>
+
+  <!-- 2025 -->
+  <option>Aflou</option>
+  <option>Barika</option>
+  <option>Ksar Chellala</option>
+  <option>Messaad</option>
+  <option>Aïn Oussara</option>
+  <option>Bou Saâda</option>
+  <option>El Abiodh Sidi Cheikh</option>
+  <option>El Kantara</option>
+  <option>Bir El Ater</option>
+  <option>Ksar El Boukhari</option>
+  <option>El Aricha</option>
+
+</select><br><br>  <button type="submit">تسجيل</button>
+</form>
+
+<hr>
+
+<h2>تسجيل الدخول</h2>
+
+<input type="email" id="loginEmail"><br><br>
+<input type="password" id="loginPassword"><br><br>
+<button onclick="login()">دخول</button>
+
+<hr>
+<div style="margin-bottom:20px; padding:15px; background:#f5f5f5; border-radius:10px;">
+
+  <input type="text" id="searchName" placeholder="ابحث باسم الطبيب"><br><br>
+
+  <input type="text" id="searchSpecialty" placeholder="ابحث بالتخصص"><br><br>
+
+  <select id="searchWilaya">
+<option value="">كل الولايات</option>
+  <option>Adrar</option>
+  <option>Chlef</option>
+  <option>Laghouat</option>
+  <option>Oum El Bouaghi</option>
+  <option>Batna</option>
+  <option>Béjaïa</option>
+  <option>Biskra</option>
+  <option>Béchar</option>
+  <option>Blida</option>
+  <option>Bouira</option>
+  <option>Tamanrasset</option>
+  <option>Tébessa</option>
+  <option>Tlemcen</option>
+  <option>Tiaret</option>
+  <option>Tizi Ouzou</option>
+  <option>Algiers</option>
+  <option>Djelfa</option>
+  <option>Jijel</option>
+  <option>Sétif</option>
+  <option>Saïda</option>
+  <option>Skikda</option>
+  <option>Sidi Bel Abbès</option>
+  <option>Annaba</option>
+  <option>Guelma</option>
+  <option>Constantine</option>
+  <option>Médéa</option>
+  <option>Mostaganem</option>
+  <option>M'Sila</option>
+  <option>Mascara</option>
+  <option>Ouargla</option>
+  <option>Oran</option>
+  <option>El Bayadh</option>
+  <option>Illizi</option>
+  <option>Bordj Bou Arreridj</option>
+  <option>Boumerdès</option>
+  <option>El Tarf</option>
+  <option>Tindouf</option>
+  <option>Tissemsilt</option>
+  <option>El Oued</option>
+  <option>Khenchela</option>
+  <option>Souk Ahras</option>
+  <option>Tipaza</option>
+  <option>Mila</option>
+  <option>Aïn Defla</option>
+  <option>Naâma</option>
+  <option>Aïn Témouchent</option>
+  <option>Ghardaïa</option>
+  <option>Relizane</option>
+
+  <!-- الولايات الجديدة -->
+  <option>Timimoune</option>
+  <option>Bordj Badji Mokhtar</option>
+  <option>Ouled Djellal</option>
+  <option>In Salah</option>
+  <option>In Guezzam</option>
+  <option>Touggourt</option>
+  <option>Djanet</option>
+  <option>El M'Ghair</option>
+  <option>Béni Abbès</option>
+  <option>El Menia</option>
+
+  <!-- 2025 -->
+  <option>Aflou</option>
+  <option>Barika</option>
+  <option>Ksar Chellala</option>
+  <option>Messaad</option>
+  <option>Aïn Oussara</option>
+  <option>Bou Saâda</option>
+  <option>El Abiodh Sidi Cheikh</option>
+  <option>El Kantara</option>
+  <option>Bir El Ater</option>
+  <option>Ksar El Boukhari</option>
+  <option>El Aricha</option>
+
+</select>
+
+</div>
+
+<h2>الأطباء</h2>
+<div id="doctorsList"></div>
+
+<h3>حجز موعد</h3>
+<div id="myStatus"></div>
+<input type="text" id="patientName">
+<div id="myBooking"></div>
+
+<script>
+let allDoctors = [];
+
+// تسجيل
+document.getElementById("doctorForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  fetch("http://localhost:3000/register-doctor", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+  name: document.getElementById("name").value,
+  email: document.getElementById("email").value,
+  password: document.getElementById("password").value,
+  phone: document.getElementById("phone").value,
+  specialty: document.getElementById("specialty").value,
+  location: document.getElementById("location").value
+})
+  })
+  .then(res => res.text())
+  .then(alert);
+});
+
+// login
+function login() {
+  fetch("http://localhost:3000/login", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      email: loginEmail.value,
+      password: loginPassword.value
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      localStorage.setItem("doctorId", data.id);
+      window.location.href = "dashboard.html";
+    } else {
+      alert("خطأ");
+    }
+  });
+}
+
+// عرض الأطباء
+function loadDoctors() {
+  fetch("http://localhost:3000/doctors")
+    .then(res => res.json())
+    .then(data => {
+      allDoctors = data;
+filterDoctors();   
+ });
+}
+function renderDoctors(list) {
+  const c = document.getElementById("doctorsList");
+  c.innerHTML = "";
+
+  list.forEach(doc => {
+    const div = document.createElement("div");
+
+    div.className = "doctor-card";
+
+    div.innerHTML = `
+      <div class="doctor-name">${doc.name || "بدون اسم"}</div>
+      <div class="doctor-specialty">${doc.specialty || "بدون تخصص"}</div>
+      <div class="doctor-wilaya">${doc.location || "بدون ولاية"}</div>
+      <div>الدور: ${doc.current_number}</div>
+      <button onclick="book(${doc.id})">حجز</button>
+    `;
+
+    c.appendChild(div);
+  });
+}
+
+function filterDoctors() {
+  const name = document.getElementById("searchName").value.toLowerCase();
+  const specialty = document.getElementById("searchSpecialty").value.toLowerCase();
+  const wilaya = document.getElementById("searchWilaya").value.toLowerCase();
+
+  const filtered = allDoctors.filter(doc =>
+    (doc.name || "").toLowerCase().includes(name) &&
+    (doc.specialty || "").toLowerCase().includes(specialty) &&
+    (doc.location || "").toLowerCase().includes(wilaya)
+  );
+
+  renderDoctors(filtered);
+}
+
+document.getElementById("searchName").addEventListener("input", filterDoctors);
+document.getElementById("searchSpecialty").addEventListener("input", filterDoctors);
+document.getElementById("searchWilaya").addEventListener("change", filterDoctors);
+
+// حجز
+function book(id) {
+  const name = document.getElementById("patientName").value;
+
+  // ✅ تحقق مهم
+  if (!name) {
+    alert("اكتب اسمك قبل الحجز");
+    return;
+  }
+
+  localStorage.setItem("doctorId", id);
+  localStorage.setItem("patientName", name);
+
+  fetch("http://localhost:3000/book-appointment", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      doctorId: id,
+      patientName: name
+    })
+  })
+  .then(() => {
+    setTimeout(() => {
+      fetch(`http://localhost:3000/appointments/${id}`)
+        .then(res => res.json())
+        .then(list => {
+
+          const last = list[list.length - 1];
+
+          if (last) {
+            document.getElementById("myBooking").innerText =
+              "الحالة: " + last.status + " | رقمك: " + (last.number || "انتظر القبول");
+          }
+
+        });
+    }, 500); // ⏱ هذا عادي خليه
+  });
+}
+setInterval(loadDoctors, 5000);
+setInterval(() => {
+  const name = localStorage.getItem("patientName");
+  const doctorId = localStorage.getItem("doctorId");
+
+  if (!name || !doctorId) return;
+
+  fetch(`http://localhost:3000/appointments/${doctorId}`)
+    .then(res => res.json())
+    .then(data => {
+
+      const myApp = data.find(a => a.patientName === name);
+
+      if (myApp) {
+        document.getElementById("myBooking").innerText =
+          "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
+      }
+    });
+}, 2000);
+</script>
+
+</script>
+</body>
+</html>

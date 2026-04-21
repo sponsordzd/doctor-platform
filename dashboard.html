@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+<!-- <link rel="stylesheet" href="style.css"> -->
+<link rel="stylesheet" href="old-style.css">
+<link rel="stylesheet" href="style.css">  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<button onclick="logout()" style="position:absolute; top:10px; right:10px; padding:10px;">
+  تسجيل الخروج
+</button>
+<h2>لوحة الطبيب</h2>
+
+<button onclick="nextPatient()">التالي</button><div id="appointmentsList"></div>
+
+<script>
+
+// تحقق تسجيل الدخول
+function checkLogin() {
+  const doctorId = localStorage.getItem("doctorId");
+
+  if (!doctorId) {
+    alert("اعمل تسجيل دخول");
+    window.location.href = "index.html";
+  }
+}
+
+// تحميل المواعيد
+function loadMyAppointments() {
+  const doctorId = localStorage.getItem("doctorId");
+
+  fetch(`http://localhost:3000/appointments/${doctorId}`)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("appointmentsList");
+      container.innerHTML = "";
+
+      if (data.length === 0) {
+        container.innerHTML = "لا توجد مواعيد";
+        return;
+      }
+
+      data.forEach(app => {
+        const div = document.createElement("div");
+
+        div.innerHTML = `
+          ${app.patientName} | ${app.status} | رقم: ${app.number || "-"}<br>
+          <button onclick="acceptAppointment(${app.id})">قبول</button>
+<button onclick="rejectAppointment(${app.id})">رفض</button>
+        `;
+
+        container.appendChild(div);
+      });
+    });
+}
+
+// قبول
+function acceptAppointment(id) {
+  fetch(`http://localhost:3000/accept/${id}`, { method: "POST" })
+    .then(() => loadMyAppointments());
+}
+function rejectAppointment(id) {
+  fetch(`http://localhost:3000/reject/${id}`, {
+    method: "POST"
+  })
+  .then(() => loadMyAppointments());
+}
+// التالي
+function nextPatient() {
+  const doctorId = localStorage.getItem("doctorId");
+
+  fetch(`http://localhost:3000/next-patient/${doctorId}`, {
+    method: "POST"
+  })
+  .then(res => res.text())
+  .then(data => {
+    alert(data); // لازم تظهر "تم التمرير"
+    loadMyAppointments();
+  })
+  .catch(err => {
+    console.log(err);
+    alert("خطأ");
+  });
+}// تشغيل
+checkLogin();
+loadMyAppointments();
+
+function logout() {
+  localStorage.removeItem("doctorId");
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
