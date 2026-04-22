@@ -338,11 +338,15 @@ function book(id) {
         .then(res => res.json())
         .then(list => {
 
-          const last = list[list.length - 1];
+          const name = localStorage.getItem("patientName");
 
-          if (last) {
-            document.getElementById("myBooking").innerText =
-              "الحالة: " + last.status + " | رقمك: " + (last.number || "انتظر القبول");
+const myApp = list.find(a => a.patientName === name);
+
+if (myApp) {
+  document.getElementById("myBooking").innerText =
+    "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
+}
+}
           }
 
         });
