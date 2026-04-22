@@ -220,6 +220,7 @@
 <div id="myBooking"></div>
 
 <script>
+  const API = "https://doctor-api-xmkb.onrender.com";
 let allDoctors = [];
 
 // تسجيل
@@ -333,44 +334,24 @@ function book(id) {
     })
   })
   .then(() => {
-    setTimeout(() => {
-      fetch(`${API}/appointments/${doctorId}`)
-        .then(res => res.json())
-        .then(list => {
+    
 
-          const name = localStorage.getItem("patientName");
-
-const myApp = list.find(a => a.patientName === name);
-
-if (myApp) {
-  document.getElementById("myBooking").innerText =
-    "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
-}
-        });
-    }, 500); // ⏱ هذا عادي خليه
-  });
-}
-setInterval(() => {
-  const name = localStorage.getItem("patientName");
-  const doctorId = localStorage.getItem("doctorId");
-
-  if (!name || !doctorId) return;
-
-  fetch(`https://doctor-api-xmkb.onrender.com/my-appointment/${doctorId}/${name}`)
+setTimeout(() => {
+  fetch(`${API}/appointments/${id}`)
     .then(res => res.json())
-    .then(app => {
+    .then(list => {
 
-      if (app) {
+      const name = localStorage.getItem("patientName");
+
+      const myApp = list.find(a => a.patientName === name);
+
+      if (myApp) {
         document.getElementById("myBooking").innerText =
-          "الحالة: " + app.status + " | رقمك: " + (app.number || "انتظر القبول");
-      } else {
-        document.getElementById("myBooking").innerText = "لا يوجد حجز";
+          "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
       }
 
     });
-
-}, 2000);
-</script>
+}, 500);
 
 </script>
 </body>
