@@ -342,7 +342,7 @@ function book(id) {
 
 // تحديث حالة المريض (الطريقة الصحيحة والوحيدة)
 function updateMyStatus() {
-  const name = localStorage.getItem("patientName");
+  const name = localStorage.getItem("patientName").toLowerCase();
   const doctorId = localStorage.getItem("doctorId");
 
   if (!name || !doctorId) return;
