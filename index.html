@@ -316,7 +316,6 @@ document.getElementById("searchWilaya").addEventListener("change", filterDoctors
 function book(id) {
   const name = document.getElementById("patientName").value;
 
-  // ✅ تحقق مهم
   if (!name) {
     alert("اكتب اسمك قبل الحجز");
     return;
@@ -325,7 +324,7 @@ function book(id) {
   localStorage.setItem("doctorId", id);
   localStorage.setItem("patientName", name);
 
-  fetch("https://doctor-api-xmkb.onrender.com/book-appointment", {
+  fetch(`${API}/book-appointment`, {
     method: "POST",
     headers: {"Content-Type":"application/json"},
     body: JSON.stringify({
@@ -334,24 +333,26 @@ function book(id) {
     })
   })
   .then(() => {
-    
 
-setTimeout(() => {
-  fetch(`${API}/appointments/${id}`)
-    .then(res => res.json())
-    .then(list => {
+    setTimeout(() => {
+      fetch(`${API}/appointments/${id}`)
+        .then(res => res.json())
+        .then(list => {
 
-      const name = localStorage.getItem("patientName");
+          const name = localStorage.getItem("patientName");
 
-      const myApp = list.find(a => a.patientName === name);
+          const myApp = list.find(a => a.patientName === name);
 
-      if (myApp) {
-        document.getElementById("myBooking").innerText =
-          "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
-      }
+          if (myApp) {
+            document.getElementById("myBooking").innerText =
+              "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
+          }
 
-    });
-}, 500);
+        });
+    }, 500);
+
+  });
+}
 
 </script>
 </body>
