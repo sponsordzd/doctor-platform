@@ -164,7 +164,17 @@ app.get("/appointments/:doctorId", (req, res) => {
 
 res.json(safe);
 });
+app.get("/my-appointment/:doctorId/:name", (req, res) => {
+  const data = readData();
 
+  const appo = data.appointments.find(
+    a =>
+      a.doctorId == req.params.doctorId &&
+      a.patientName === req.params.name
+  );
+
+  res.json(appo || null);
+});
 // قبول
 app.post("/accept/:id", (req, res) => {
   const data = readData();
