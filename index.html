@@ -334,7 +334,7 @@ function book(id) {
   })
   .then(() => {
     setTimeout(() => {
-      fetch(`https://doctor-api-xmkb.onrender.com/appointments/${id}`)
+      fetch(`${API}/appointments/${doctorId}`)
         .then(res => res.json())
         .then(list => {
 
@@ -346,9 +346,6 @@ if (myApp) {
   document.getElementById("myBooking").innerText =
     "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
 }
-}
-          }
-
         });
     }, 500); // ⏱ هذا عادي خليه
   });
