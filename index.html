@@ -220,73 +220,35 @@
 <div id="myBooking"></div>
 
 <script>
-  const API = "https://doctor-api-xmkb.onrender.com";
+const API = "https://doctor-api-xmkb.onrender.com";
 let allDoctors = [];
 
-// تسجيل
-document.getElementById("doctorForm").addEventListener("submit", function(e) {
-  e.preventDefault();
-
-  fetch("https://doctor-api-xmkb.onrender.com/register-doctor", {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({
-  name: document.getElementById("name").value,
-  email: document.getElementById("email").value,
-  password: document.getElementById("password").value,
-  phone: document.getElementById("phone").value,
-  specialty: document.getElementById("specialty").value,
-  location: document.getElementById("location").value
-})
-  })
-  .then(res => res.text())
-  .then(alert);
-});
-
-// login
-function login() {
-  fetch("https://doctor-api-xmkb.onrender.com/login", {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({
-      email: loginEmail.value,
-      password: loginPassword.value
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      localStorage.setItem("doctorId", data.id);
-      window.location.href = "dashboard.html";
-    } else {
-      alert("خطأ");
-    }
-  });
-}
-
-// عرض الأطباء
+// تحميل الأطباء
 function loadDoctors() {
-fetch("https://doctor-api-xmkb.onrender.com/doctors")
-  .then(res => res.json())
+  fetch(`${API}/doctors`)
+    .then(res => res.json())
     .then(data => {
-      allDoctors = data;
-filterDoctors();   
- });
+      allDoctors = data || [];
+      filterDoctors();
+    })
+    .catch(() => {
+      document.getElementById("doctorsList").innerText = "خطأ في تحميل الأطباء";
+    });
 }
+
 function renderDoctors(list) {
   const c = document.getElementById("doctorsList");
   c.innerHTML = "";
 
   list.forEach(doc => {
     const div = document.createElement("div");
-
     div.className = "doctor-card";
 
     div.innerHTML = `
       <div class="doctor-name">${doc.name || "بدون اسم"}</div>
       <div class="doctor-specialty">${doc.specialty || "بدون تخصص"}</div>
       <div class="doctor-wilaya">${doc.location || "بدون ولاية"}</div>
-      <div>الدور: ${doc.current_number}</div>
+      <div>الدور: ${doc.current_number || 0}</div>
       <button onclick="book(${doc.id})">حجز</button>
     `;
 
@@ -312,6 +274,47 @@ document.getElementById("searchName").addEventListener("input", filterDoctors);
 document.getElementById("searchSpecialty").addEventListener("input", filterDoctors);
 document.getElementById("searchWilaya").addEventListener("change", filterDoctors);
 
+// تسجيل
+document.getElementById("doctorForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  fetch(`${API}/register-doctor`, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      name: name.value,
+      email: email.value,
+      password: password.value,
+      phone: phone.value,
+      specialty: specialty.value,
+      location: location.value
+    })
+  })
+  .then(res => res.text())
+  .then(alert);
+});
+
+// تسجيل الدخول
+function login() {
+  fetch(`${API}/login`, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      email: loginEmail.value,
+      password: loginPassword.value
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      localStorage.setItem("doctorId", data.id);
+      window.location.href = "dashboard.html";
+    } else {
+      alert("خطأ");
+    }
+  });
+}
+
 // حجز
 function book(id) {
   const name = document.getElementById("patientName").value;
@@ -333,27 +336,37 @@ function book(id) {
     })
   })
   .then(() => {
-
-    setTimeout(() => {
-      fetch(`${API}/appointments/${id}`)
-        .then(res => res.json())
-        .then(list => {
-
-          const name = localStorage.getItem("patientName");
-
-          const myApp = list.find(a => a.patientName === name);
-
-          if (myApp) {
-            document.getElementById("myBooking").innerText =
-              "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
-          }
-
-        });
-    }, 500);
-
+    updateMyStatus();
   });
 }
 
+// تحديث حالة المريض (الطريقة الصحيحة والوحيدة)
+function updateMyStatus() {
+  const name = localStorage.getItem("patientName");
+  const doctorId = localStorage.getItem("doctorId");
+
+  if (!name || !doctorId) return;
+
+  fetch(`${API}/appointments/${doctorId}`)
+    .then(res => res.json())
+    .then(list => {
+      const myApp = (list || []).find(a => a.patientName === name);
+
+      if (myApp) {
+        document.getElementById("myBooking").innerText =
+          "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
+      } else {
+        document.getElementById("myBooking").innerText = "لا يوجد حجز";
+      }
+    });
+}
+
+// تحديث تلقائي
+setInterval(updateMyStatus, 2000);
+
+// تشغيل أولي
+loadDoctors();
+updateMyStatus();
 </script>
 </body>
 </html>
