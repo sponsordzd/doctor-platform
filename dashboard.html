@@ -31,7 +31,7 @@ function checkLogin() {
 function loadMyAppointments() {
   const doctorId = localStorage.getItem("doctorId");
 
-  fetch(`http://https://doctor-api-xmkb.onrender.com/${doctorId}`)
+  fetch(`//https://doctor-api-xmkb.onrender.com/${doctorId}`)
     .then(res => res.json())
     .then(data => {
       const container = document.getElementById("appointmentsList");
