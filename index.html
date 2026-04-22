@@ -349,29 +349,23 @@ function book(id) {
     }, 500); // ⏱ هذا عادي خليه
   });
 }
-setInterval(loadDoctors, 5000);
 setInterval(() => {
   const name = localStorage.getItem("patientName");
   const doctorId = localStorage.getItem("doctorId");
 
   if (!name || !doctorId) return;
 
-  fetch(`https://doctor-api-xmkb.onrender.com/appointments/${doctorId}`)
+  fetch(`https://doctor-api-xmkb.onrender.com/my-appointment/${doctorId}/${name}`)
     .then(res => res.json())
-    .then(list => {
+    .then(app => {
 
-      const myApp = list.find(a => a.patientName === name);
-
-      if (myApp) {
+      if (app) {
         document.getElementById("myBooking").innerText =
-          "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
+          "الحالة: " + app.status + " | رقمك: " + (app.number || "انتظر القبول");
       } else {
-        document.getElementById("myBooking").innerText = "لم يتم العثور على حجز";
+        document.getElementById("myBooking").innerText = "لا يوجد حجز";
       }
 
-    })
-    .catch(() => {
-      document.getElementById("myBooking").innerText = "خطأ في الاتصال";
     });
 
 }, 2000);
