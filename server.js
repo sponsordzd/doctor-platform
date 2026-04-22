@@ -87,8 +87,11 @@ const safe = data.doctors.map(d => ({
   id: d.id,
   name: d.name,
   specialty: d.specialty,
-  location: d.location
+  location: d.location,
+  current_number: d.current_number || 0
 }));
+
+res.json(safe);
 
 res.json(safe);});
 
