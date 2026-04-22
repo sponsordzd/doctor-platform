@@ -342,7 +342,7 @@ function book(id) {
 
 // تحديث حالة المريض (الطريقة الصحيحة والوحيدة)
 function updateMyStatus() {
-  const name = localStorage.getItem("patientName").toLowerCase();
+ const name = localStorage.getItem("patientName").trim().toLowerCase();
   const doctorId = localStorage.getItem("doctorId");
 
   if (!name || !doctorId) return;
@@ -350,7 +350,9 @@ function updateMyStatus() {
   fetch(`${API}/appointments/${doctorId}`)
     .then(res => res.json())
     .then(list => {
-      const myApp = (list || []).find(a => a.patientName === name);
+      const myApp = (list || []).find(
+  a => a.patientName && a.patientName.trim().toLowerCase() === name
+);
 
       if (myApp) {
         document.getElementById("myBooking").innerText =
