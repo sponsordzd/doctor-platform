@@ -338,8 +338,7 @@ function book(id) {
         .then(res => res.json())
         .then(list => {
 
-         const myApp = list.find(a => a.patientName === name);
-
+const last = list[list.length - 1];
 if (myApp) {
   document.getElementById("myBooking").innerText =
     "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
