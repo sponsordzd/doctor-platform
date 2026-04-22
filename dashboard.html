@@ -16,7 +16,7 @@
 <button onclick="nextPatient()">التالي</button><div id="appointmentsList"></div>
 
 <script>
-
+const API = "https://doctor-api-xmkb.onrender.com";
 // تحقق تسجيل الدخول
 function checkLogin() {
   const doctorId = localStorage.getItem("doctorId");
@@ -31,7 +31,7 @@ function checkLogin() {
 function loadMyAppointments() {
   const doctorId = localStorage.getItem("doctorId");
 
-  fetch(`http://localhost:3000/appointments/${doctorId}`)
+  fetch(`http://https://doctor-api-xmkb.onrender.com/${doctorId}`)
     .then(res => res.json())
     .then(data => {
       const container = document.getElementById("appointmentsList");
@@ -58,11 +58,11 @@ function loadMyAppointments() {
 
 // قبول
 function acceptAppointment(id) {
-  fetch(`http://localhost:3000/accept/${id}`, { method: "POST" })
+  fetch(`https://doctor-api-xmkb.onrender.com/accept/${id}`, { method: "POST" })
     .then(() => loadMyAppointments());
 }
 function rejectAppointment(id) {
-  fetch(`http://localhost:3000/reject/${id}`, {
+  fetch(`https://doctor-api-xmkb.onrender.com/reject/${id}`, {
     method: "POST"
   })
   .then(() => loadMyAppointments());
@@ -71,7 +71,7 @@ function rejectAppointment(id) {
 function nextPatient() {
   const doctorId = localStorage.getItem("doctorId");
 
-  fetch(`http://localhost:3000/next-patient/${doctorId}`, {
+  fetch(`https://doctor-api-xmkb.onrender.com/next-patient/${doctorId}`, {
     method: "POST"
   })
   .then(res => res.text())
