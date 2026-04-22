@@ -339,9 +339,11 @@ function book(id) {
         .then(list => {
 
 const last = list[list.length - 1];
-if (myApp) {
+
+if (last) {
   document.getElementById("myBooking").innerText =
-    "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
+    "الحالة: " + last.status + " | رقمك: " + (last.number || "انتظر القبول");
+}
 }
           }
 
