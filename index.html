@@ -338,13 +338,11 @@ function book(id) {
         .then(res => res.json())
         .then(list => {
 
-const last = list[list.length - 1];
+          const last = list[list.length - 1];
 
-if (last) {
-  document.getElementById("myBooking").innerText =
-    "الحالة: " + last.status + " | رقمك: " + (last.number || "انتظر القبول");
-}
-}
+          if (last) {
+            document.getElementById("myBooking").innerText =
+              "الحالة: " + last.status + " | رقمك: " + (last.number || "انتظر القبول");
           }
 
         });
