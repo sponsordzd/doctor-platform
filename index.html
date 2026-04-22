@@ -265,8 +265,8 @@ function login() {
 
 // عرض الأطباء
 function loadDoctors() {
-  fetch("https://doctor-api-xmkb.onrender.com/doctors")
-    .then(res => res.json())
+fetch("https://doctor-api-xmkb.onrender.com/doctors")
+  .then(res => res.json())
     .then(data => {
       allDoctors = data;
 filterDoctors();   
