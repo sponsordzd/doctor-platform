@@ -155,7 +155,14 @@ app.get("/appointments/:doctorId", (req, res) => {
     a => a.doctorId == req.params.doctorId
   );
 
-  res.json(list);
+ const safe = list.map(a => ({
+  id: a.id,
+  patientName: a.patientName,
+  status: a.status,
+  number: a.number
+}));
+
+res.json(safe);
 });
 
 // قبول
