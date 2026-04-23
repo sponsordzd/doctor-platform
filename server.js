@@ -30,7 +30,6 @@ app.post("/register-doctor", async (req, res) => {
   };
 
   data.doctors.push(doctor);
-  writeData(data);
 
   res.send("تم تسجيل الطبيب");
 });
@@ -39,7 +38,6 @@ app.post("/register-doctor", async (req, res) => {
 // تسجيل الدخول
 // =========================
 app.post("/login", async (req, res) => {
-  const data = readData();
 
   const doctor = data.doctors.find(d => d.email === req.body.email);
   if (!doctor) return res.json({ success: false });
@@ -54,7 +52,6 @@ app.post("/login", async (req, res) => {
 // عرض الأطباء
 // =========================
 app.get("/doctors", (req, res) => {
-  const data = readData();
 
   const safe = data.doctors.map(d => ({
     id: d.id,
@@ -71,7 +68,6 @@ app.get("/doctors", (req, res) => {
 // حجز
 // =========================
 app.post("/book-appointment", (req, res) => {
-  const data = readData();
 
   const appo = {
     id: Date.now(),
@@ -91,7 +87,6 @@ app.post("/book-appointment", (req, res) => {
 // مواعيد طبيب
 // =========================
 app.get("/appointments/:doctorId", (req, res) => {
-  const data = readData();
 
   const list = data.appointments
     .filter(a => a.doctorId == req.params.doctorId)
@@ -109,7 +104,6 @@ app.get("/appointments/:doctorId", (req, res) => {
 // موعد المريض (مهم جداً)
 // =========================
 app.get("/my-appointment/:doctorId/:name", (req, res) => {
-  const data = readData();
 
   const name = req.params.name.trim().toLowerCase();
 
@@ -126,7 +120,6 @@ app.get("/my-appointment/:doctorId/:name", (req, res) => {
 // قبول
 // =========================
 app.post("/accept/:id", (req, res) => {
-  const data = readData();
 
   const appo = data.appointments.find(a => a.id == req.params.id);
   if (!appo) return res.send("not found");
@@ -138,8 +131,6 @@ app.post("/accept/:id", (req, res) => {
   doctor.last_number++;
   appo.number = doctor.last_number;
 
-  writeData(data);
-
   res.send("تم القبول");
 });
 
@@ -147,14 +138,11 @@ app.post("/accept/:id", (req, res) => {
 // رفض
 // =========================
 app.post("/reject/:id", (req, res) => {
-  const data = readData();
 
   const appo = data.appointments.find(a => a.id == req.params.id);
   if (!appo) return res.send("not found");
 
   appo.status = "rejected";
-
-  writeData(data);
 
   res.send("تم الرفض");
 });
@@ -163,15 +151,12 @@ app.post("/reject/:id", (req, res) => {
 // التالي
 // =========================
 app.post("/next-patient/:doctorId", (req, res) => {
-  const data = readData();
 
   const doctor = data.doctors.find(d => d.id == req.params.doctorId);
   if (!doctor) return res.send("not found");
 
   doctor.current_number++;
-
-  writeData(data);
-
+  
   res.send("تم التمرير");
 });
 app.use(express.static(__dirname));
