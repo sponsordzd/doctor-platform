@@ -1,84 +1,80 @@
 const express = require("express");
+const fs = require("fs");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const mongoose = require("mongoose");
 
-mongoose.connect("mongodb+srv://sponsordzd17_db_user:VbsudswfJGLLNpzC@cluster0.9coxxyx.mongodb.net/?appName=Cluster0");
-
-const Doctor = mongoose.model("Doctor", {
-  name: String,
-  email: String,
-  password: String,
-  phone: String,
-  specialty: String,
-  location: String,
-  current_number: Number,
-  last_number: Number
-});
-const Appointment = mongoose.model("Appointment", {
-  doctorId: String,
-  patientName: String,
-  status: String,
-  number: Number
-});
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+const FILE = "database.json";
+
+// قراءة
+function readData() {
+  if (!fs.existsSync(FILE)) {
+    return { doctors: [], appointments: [] };
+  }
+  return JSON.parse(fs.readFileSync(FILE));
+}
+
+// كتابة
+function writeData(data) {
+  fs.writeFileSync(FILE, JSON.stringify(data, null, 2));
+}
 
 // =========================
 // تسجيل طبيب
 // =========================
 app.post("/register-doctor", async (req, res) => {
-  try {
+  const data = readData();
 
-    const exist = await Doctor.findOne({ email: req.body.email });
-    if (exist) return res.send("هذا الإيميل مسجل");
+  const exist = data.doctors.find(d => d.email === req.body.email);
+  if (exist) return res.send("هذا الإيميل مسجل");
 
-    const hashed = await bcrypt.hash(req.body.password, 10);
+  const hashed = await bcrypt.hash(req.body.password, 10);
 
-    const doctor = new Doctor({
-      name: req.body.name,
-      email: req.body.email,
-      password: hashed,
-      phone: req.body.phone,
-      specialty: req.body.specialty,
-      location: req.body.location,
-      current_number: 0,
-      last_number: 0
-    });
+  const doctor = {
+    id: Date.now(),
+    name: req.body.name,
+    email: req.body.email,
+    password: hashed,
+    phone: req.body.phone,
+    specialty: req.body.specialty,
+    location: req.body.location,
+    current_number: 0,
+    last_number: 0,
+    payment_status: "paid" // نخلوه ظاهر مباشرة
+  };
 
-    await doctor.save();
+  data.doctors.push(doctor);
+  writeData(data);
 
-    res.send("تم تسجيل الطبيب");
-
-  } catch (err) {
-    console.log("ERROR REGISTER:", err);
-    res.status(500).send("error");
-  }
+  res.send("تم تسجيل الطبيب");
 });
 
 // =========================
 // تسجيل الدخول
 // =========================
 app.post("/login", async (req, res) => {
+  const data = readData();
 
-const doctor = await Doctor.findOne({ email: req.body.email });  if (!doctor) return res.json({ success: false });
+  const doctor = data.doctors.find(d => d.email === req.body.email);
+  if (!doctor) return res.json({ success: false });
 
   const ok = await bcrypt.compare(req.body.password, doctor.password);
 
-  if (ok) res.json({ success: true, id: doctor._id });
+  if (ok) res.json({ success: true, id: doctor.id });
   else res.json({ success: false });
 });
 
 // =========================
 // عرض الأطباء
 // =========================
-app.get("/doctors", async (req, res) => {
+app.get("/doctors", (req, res) => {
+  const data = readData();
 
-  const doctors = await Doctor.find();
-
-  const safe = doctors.map(d => ({
-    id: d._id,
+  const safe = data.doctors.map(d => ({
+    id: d.id,
     name: d.name,
     specialty: d.specialty,
     location: d.location,
@@ -92,17 +88,18 @@ app.get("/doctors", async (req, res) => {
 // حجز
 // =========================
 app.post("/book-appointment", (req, res) => {
+  const data = readData();
 
-  app.post("/book-appointment", async (req, res) => {
-
-  const appo = new Appointment({
+  const appo = {
+    id: Date.now(),
     doctorId: req.body.doctorId,
     patientName: req.body.patientName.trim().toLowerCase(),
     status: "pending",
     number: null
-  });
+  };
 
-  await appo.save();
+  data.appointments.push(appo);
+  writeData(data);
 
   res.send("تم الحجز");
 });
@@ -111,59 +108,54 @@ app.post("/book-appointment", (req, res) => {
 // مواعيد طبيب
 // =========================
 app.get("/appointments/:doctorId", (req, res) => {
+  const data = readData();
 
-  app.get("/appointments/:doctorId", async (req, res) => {
+  const list = data.appointments
+    .filter(a => a.doctorId == req.params.doctorId)
+    .map(a => ({
+      id: a.id,
+      patientName: (a.patientName || "").trim().toLowerCase(),
+      status: a.status,
+      number: a.number
+    }));
 
-  const list = await Appointment.find({ doctorId: req.params.doctorId });
-
-  const safe = list.map(a => ({
-    id: a._id,
-    patientName: a.patientName,
-    status: a.status,
-    number: a.number
-  }));
-
-  res.json(safe);
+  res.json(list);
 });
 
 // =========================
 // موعد المريض (مهم جداً)
 // =========================
 app.get("/my-appointment/:doctorId/:name", (req, res) => {
+  const data = readData();
 
   const name = req.params.name.trim().toLowerCase();
 
-  app.get("/my-appointment/:doctorId/:name", async (req, res) => {
+  const appo = data.appointments.find(
+    a =>
+      a.doctorId == req.params.doctorId &&
+      a.patientName === name
+  );
 
-  const name = req.params.name.trim().toLowerCase();
-
-  const appo = await Appointment.findOne({
-    doctorId: req.params.doctorId,
-    patientName: name
-  });
-
-  res.json(appo);
+  res.json(appo || null);
 });
 
 // =========================
 // قبول
 // =========================
 app.post("/accept/:id", (req, res) => {
+  const data = readData();
 
-  app.post("/accept/:id", async (req, res) => {
-
-  const appo = await Appointment.findById(req.params.id);
+  const appo = data.appointments.find(a => a.id == req.params.id);
   if (!appo) return res.send("not found");
 
   appo.status = "accepted";
 
-  const doctor = await Doctor.findById(appo.doctorId);
+  const doctor = data.doctors.find(d => d.id == appo.doctorId);
 
   doctor.last_number++;
   appo.number = doctor.last_number;
 
-  await doctor.save();
-  await appo.save();
+  writeData(data);
 
   res.send("تم القبول");
 });
@@ -172,14 +164,14 @@ app.post("/accept/:id", (req, res) => {
 // رفض
 // =========================
 app.post("/reject/:id", (req, res) => {
+  const data = readData();
 
-  app.post("/reject/:id", async (req, res) => {
-
-  const appo = await Appointment.findById(req.params.id);
+  const appo = data.appointments.find(a => a.id == req.params.id);
   if (!appo) return res.send("not found");
 
   appo.status = "rejected";
-  await appo.save();
+
+  writeData(data);
 
   res.send("تم الرفض");
 });
@@ -188,14 +180,14 @@ app.post("/reject/:id", (req, res) => {
 // التالي
 // =========================
 app.post("/next-patient/:doctorId", (req, res) => {
+  const data = readData();
 
-  app.post("/next-patient/:doctorId", async (req, res) => {
-
-  const doctor = await Doctor.findById(req.params.doctorId);
+  const doctor = data.doctors.find(d => d.id == req.params.doctorId);
   if (!doctor) return res.send("not found");
 
   doctor.current_number++;
-  await doctor.save();
+
+  writeData(data);
 
   res.send("تم التمرير");
 });
