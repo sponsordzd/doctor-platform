@@ -29,26 +29,32 @@ app.use(express.json());
 // تسجيل طبيب
 // =========================
 app.post("/register-doctor", async (req, res) => {
+  try {
 
-  const exist = await Doctor.findOne({ email: req.body.email });
-if (exist) return res.send("هذا الإيميل مسجل");
+    const exist = await Doctor.findOne({ email: req.body.email });
+    if (exist) return res.send("هذا الإيميل مسجل");
 
-const hashed = await bcrypt.hash(req.body.password, 10);
+    const hashed = await bcrypt.hash(req.body.password, 10);
 
-const doctor = new Doctor({
-  name: req.body.name,
-  email: req.body.email,
-  password: hashed,
-  phone: req.body.phone,
-  specialty: req.body.specialty,
-  location: req.body.location,
-  current_number: 0,
-  last_number: 0
-});
+    const doctor = new Doctor({
+      name: req.body.name,
+      email: req.body.email,
+      password: hashed,
+      phone: req.body.phone,
+      specialty: req.body.specialty,
+      location: req.body.location,
+      current_number: 0,
+      last_number: 0
+    });
 
-await doctor.save();
+    await doctor.save();
 
-  res.send("تم تسجيل الطبيب");
+    res.send("تم تسجيل الطبيب");
+
+  } catch (err) {
+    console.log("ERROR REGISTER:", err);
+    res.status(500).send("error");
+  }
 });
 
 // =========================
