@@ -281,14 +281,14 @@ document.getElementById("doctorForm").addEventListener("submit", function(e) {
   fetch(`${API}/register-doctor`, {
     method: "POST",
     headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({
-      name: name.value,
-      email: email.value,
-      password: password.value,
-      phone: phone.value,
-      specialty: specialty.value,
-      location: location.value
-    })
+   body: JSON.stringify({
+  name: document.getElementById("name").value,
+  email: document.getElementById("email").value,
+  password: document.getElementById("password").value,
+  phone: document.getElementById("phone").value,
+  specialty: document.getElementById("specialty").value,
+  location: document.getElementById("location").value
+})
   })
   .then(res => res.text())
   .then(alert);
