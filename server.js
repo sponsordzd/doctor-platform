@@ -15,6 +15,12 @@ const Doctor = mongoose.model("Doctor", {
   current_number: Number,
   last_number: Number
 });
+const Appointment = mongoose.model("Appointment", {
+  doctorId: String,
+  patientName: String,
+  status: String,
+  number: Number
+});
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -76,23 +82,21 @@ app.get("/doctors", async (req, res) => {
   res.json(safe);
 });
 
-  res.json(safe);
-});
-
 // =========================
 // حجز
 // =========================
 app.post("/book-appointment", (req, res) => {
 
-  const appo = {
-    id: Date.now(),
+  app.post("/book-appointment", async (req, res) => {
+
+  const appo = new Appointment({
     doctorId: req.body.doctorId,
     patientName: req.body.patientName.trim().toLowerCase(),
     status: "pending",
     number: null
-  };
+  });
 
-  data.appointments.push(appo);
+  await appo.save();
 
   res.send("تم الحجز");
 });
@@ -102,16 +106,18 @@ app.post("/book-appointment", (req, res) => {
 // =========================
 app.get("/appointments/:doctorId", (req, res) => {
 
-  const list = data.appointments
-    .filter(a => a.doctorId == req.params.doctorId)
-    .map(a => ({
-      id: a.id,
-      patientName: (a.patientName || "").trim().toLowerCase(),
-      status: a.status,
-      number: a.number
-    }));
+  app.get("/appointments/:doctorId", async (req, res) => {
 
-  res.json(list);
+  const list = await Appointment.find({ doctorId: req.params.doctorId });
+
+  const safe = list.map(a => ({
+    id: a._id,
+    patientName: a.patientName,
+    status: a.status,
+    number: a.number
+  }));
+
+  res.json(safe);
 });
 
 // =========================
@@ -121,13 +127,16 @@ app.get("/my-appointment/:doctorId/:name", (req, res) => {
 
   const name = req.params.name.trim().toLowerCase();
 
-  const appo = data.appointments.find(
-    a =>
-      a.doctorId == req.params.doctorId &&
-      a.patientName === name
-  );
+  app.get("/my-appointment/:doctorId/:name", async (req, res) => {
 
-  res.json(appo || null);
+  const name = req.params.name.trim().toLowerCase();
+
+  const appo = await Appointment.findOne({
+    doctorId: req.params.doctorId,
+    patientName: name
+  });
+
+  res.json(appo);
 });
 
 // =========================
@@ -135,15 +144,20 @@ app.get("/my-appointment/:doctorId/:name", (req, res) => {
 // =========================
 app.post("/accept/:id", (req, res) => {
 
-  const appo = data.appointments.find(a => a.id == req.params.id);
+  app.post("/accept/:id", async (req, res) => {
+
+  const appo = await Appointment.findById(req.params.id);
   if (!appo) return res.send("not found");
 
   appo.status = "accepted";
 
-  const doctor = data.doctors.find(d => d.id == appo.doctorId);
+  const doctor = await Doctor.findById(appo.doctorId);
 
   doctor.last_number++;
   appo.number = doctor.last_number;
+
+  await doctor.save();
+  await appo.save();
 
   res.send("تم القبول");
 });
@@ -153,10 +167,13 @@ app.post("/accept/:id", (req, res) => {
 // =========================
 app.post("/reject/:id", (req, res) => {
 
-  const appo = data.appointments.find(a => a.id == req.params.id);
+  app.post("/reject/:id", async (req, res) => {
+
+  const appo = await Appointment.findById(req.params.id);
   if (!appo) return res.send("not found");
 
   appo.status = "rejected";
+  await appo.save();
 
   res.send("تم الرفض");
 });
@@ -166,11 +183,14 @@ app.post("/reject/:id", (req, res) => {
 // =========================
 app.post("/next-patient/:doctorId", (req, res) => {
 
-  const doctor = data.doctors.find(d => d.id == req.params.doctorId);
+  app.post("/next-patient/:doctorId", async (req, res) => {
+
+  const doctor = await Doctor.findById(req.params.doctorId);
   if (!doctor) return res.send("not found");
 
   doctor.current_number++;
-  
+  await doctor.save();
+
   res.send("تم التمرير");
 });
 app.use(express.static(__dirname));
