@@ -61,17 +61,20 @@ const doctor = await Doctor.findOne({ email: req.body.email });  if (!doctor) re
 // =========================
 // عرض الأطباء
 // =========================
-app.get("/doctors", (req, res) => {
+app.get("/doctors", async (req, res) => {
 
   const doctors = await Doctor.find();
 
-const safe = doctors.map(d => ({
-  id: d._id,
-  name: d.name,
-  specialty: d.specialty,
-  location: d.location,
-  current_number: d.current_number || 0
-}));
+  const safe = doctors.map(d => ({
+    id: d._id,
+    name: d.name,
+    specialty: d.specialty,
+    location: d.location,
+    current_number: d.current_number || 0
+  }));
+
+  res.json(safe);
+});
 
   res.json(safe);
 });
