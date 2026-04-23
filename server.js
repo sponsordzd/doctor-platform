@@ -50,12 +50,11 @@ await doctor.save();
 // =========================
 app.post("/login", async (req, res) => {
 
-  const doctor = data.doctors.find(d => d.email === req.body.email);
-  if (!doctor) return res.json({ success: false });
+const doctor = await Doctor.findOne({ email: req.body.email });  if (!doctor) return res.json({ success: false });
 
   const ok = await bcrypt.compare(req.body.password, doctor.password);
 
-  if (ok) res.json({ success: true, id: doctor.id });
+  if (ok) res.json({ success: true, id: doctor._id });
   else res.json({ success: false });
 });
 
