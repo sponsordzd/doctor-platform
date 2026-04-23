@@ -9,7 +9,6 @@ app.use(express.json());
 // تسجيل طبيب
 // =========================
 app.post("/register-doctor", async (req, res) => {
-  const data = readData();
 
   const exist = data.doctors.find(d => d.email === req.body.email);
   if (exist) return res.send("هذا الإيميل مسجل");
@@ -78,7 +77,6 @@ app.post("/book-appointment", (req, res) => {
   };
 
   data.appointments.push(appo);
-  writeData(data);
 
   res.send("تم الحجز");
 });
