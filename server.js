@@ -1,23 +1,11 @@
 const express = require("express");
+const fs = require("fs");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-
 const app = express();
 app.use(cors());
+const FILE = "database.json";
 app.use(express.json());
-
-// قراءة
-function readData() {
-  if (!fs.existsSync(FILE)) {
-    return { doctors: [], appointments: [] };
-  }
-  return JSON.parse(fs.readFileSync(FILE));
-}
-
-// كتابة
-function writeData(data) {
-  fs.writeFileSync(FILE, JSON.stringify(data, null, 2));
-}
 
 // =========================
 // تسجيل طبيب
