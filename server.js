@@ -1,10 +1,8 @@
 const express = require("express");
-const fs = require("fs");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const app = express();
 app.use(cors());
-const FILE = "database.json";
 app.use(express.json());
 
 // =========================
