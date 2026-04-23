@@ -1,6 +1,20 @@
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
+
+mongoose.connect("mongodb+srv://sponsordzd17_db_user:VbsudswfJGLLNpzC@cluster0.9coxxyx.mongodb.net/?appName=Cluster0");
+
+const Doctor = mongoose.model("Doctor", {
+  name: String,
+  email: String,
+  password: String,
+  phone: String,
+  specialty: String,
+  location: String,
+  current_number: Number,
+  last_number: Number
+});
 const app = express();
 app.use(cors());
 app.use(express.json());
