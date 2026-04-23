@@ -110,14 +110,9 @@ app.post("/book-appointment", (req, res) => {
 app.get("/appointments/:doctorId", (req, res) => {
   const data = readData();
 
-  const list = data.appointments
-    .filter(a => a.doctorId == req.params.doctorId)
-    .map(a => ({
-      id: a.id,
-      patientName: (a.patientName || "").trim().toLowerCase(),
-      status: a.status,
-      number: a.number
-    }));
+  const list = data.appointments.filter(
+    a => a.doctorId == req.params.doctorId
+  );
 
   res.json(list);
 });
