@@ -1,13 +1,10 @@
 const express = require("express");
-const fs = require("fs");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-const FILE = "database.json";
 
 // قراءة
 function readData() {
