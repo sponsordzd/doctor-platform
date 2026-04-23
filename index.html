@@ -347,21 +347,17 @@ function updateMyStatus() {
 
   if (!name || !doctorId) return;
 
-  fetch(`${API}/appointments/${doctorId}`)
-    .then(res => res.json())
-    .then(list => {
-      const myApp = (list || []).find(
-  a => a.patientName && a.patientName.trim().toLowerCase() === name
-);
-
-      if (myApp) {
-        document.getElementById("myBooking").innerText =
-          "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
-      } else {
-        document.getElementById("myBooking").innerText = "لا يوجد حجز";
-      }
-    });
-
+  fetch(`${API}/my-appointment/${doctorId}/${name}`)
+  .then(res => res.json())
+  .then(myApp => {
+    if (myApp) {
+      document.getElementById("myBooking").innerText =
+        "الحالة: " + myApp.status + " | رقمك: " + (myApp.number || "انتظر القبول");
+    } else {
+      document.getElementById("myBooking").innerText = "لا يوجد حجز";
+    }
+  });
+}
 // تحديث تلقائي
 setInterval(updateMyStatus, 2000);
 
